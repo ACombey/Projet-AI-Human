@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 # Vérifie si Docker tourne
 if ! docker info > /dev/null 2>&1; then
   echo "Docker ne tourne pas, démarre Docker Desktop puis relance."
@@ -11,6 +13,9 @@ if lsof -i :7860 > /dev/null; then
   echo "Port 7860 occupé, arrêt des conteneurs sur ce port..."
   docker ps --filter "publish=7860" --format "{{.ID}}" | xargs -r docker stop
 fi
+
+# Build l'image Docker locale
+docker build -t mon-mlflow-image .
 
 # Lance le container
 docker run --rm -it \
