@@ -52,6 +52,6 @@ RUN pip install -r /requirements.txt
 # type of server
 CMD ["mlflow", "server", \
      "--host", "0.0.0.0", \
-     "--port", "${PORT}", \
+     "--port", "7860", \
      "--backend-store-uri", "${BACKEND_STORE_URI}", \
      "--default-artifact-root", "${ARTIFACT_STORE_URI}"]
