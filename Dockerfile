@@ -2,8 +2,18 @@
 FROM continuumio/miniconda3
 
 # Update packages and install nano unzip and curl
-RUN apt-get update
-RUN apt-get install nano unzip curl -y
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    nano \
+    unzip \
+    curl \
+ && rm -rf /var/lib/apt/lists/*
+
 
 # Install AWS cli - Necessary since we are going to interact with S3 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -34,10 +44,6 @@ COPY --chown=user . $HOME/app
 COPY requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-ENV BACKEND_STORE_URI=$BACKEND_STORE_URI
-ENV ARTIFACT_STORE_URI=$ARTIFACT_STORE_URI
 
 # Launch mlflow server 
 # Here we chose to have $PORT as environment variable but you could have hard coded 7860 
@@ -46,6 +52,6 @@ ENV ARTIFACT_STORE_URI=$ARTIFACT_STORE_URI
 # type of server
 CMD ["mlflow", "server", \
      "--host", "0.0.0.0", \
-     "--port", "7860", \
+     "--port", "${PORT}", \
      "--backend-store-uri", "${BACKEND_STORE_URI}", \
      "--default-artifact-root", "${ARTIFACT_STORE_URI}"]
